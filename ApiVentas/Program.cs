@@ -10,6 +10,7 @@ builder.Services.AddControllers();
 #region "CONTROLADORES"
 
 builder.Services.AddScoped<IPais, PaisServices>();
+builder.Services.AddScoped<IModulo, ModuloServices>();
 
 #endregion
 
