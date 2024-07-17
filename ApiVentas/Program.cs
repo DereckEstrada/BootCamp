@@ -11,6 +11,8 @@ builder.Services.AddControllers();
 
 builder.Services.AddScoped<IPais, PaisServices>();
 builder.Services.AddScoped<IModulo, ModuloServices>();
+builder.Services.AddScoped<IOpcion, OpcionServices>();
+builder.Services.AddScoped<IMovimiento, MovimientoServices>();
 
 #endregion
 
