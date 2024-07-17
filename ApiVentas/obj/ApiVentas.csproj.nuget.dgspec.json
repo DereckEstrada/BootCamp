@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\derec\\OneDrive\\Documents\\Bootcamp\\.NetCore\\ApiVentas\\ApiVentas\\ApiVentas.csproj": {}
+    "C:\\Users\\Laptop DTI\\Documents\\Personal\\Clases\\netcore\\BootCamp\\ApiVentas\\ApiVentas.csproj": {}
   },
   "projects": {
-    "C:\\Users\\derec\\OneDrive\\Documents\\Bootcamp\\.NetCore\\ApiVentas\\ApiVentas\\ApiVentas.csproj": {
+    "C:\\Users\\Laptop DTI\\Documents\\Personal\\Clases\\netcore\\BootCamp\\ApiVentas\\ApiVentas.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\derec\\OneDrive\\Documents\\Bootcamp\\.NetCore\\ApiVentas\\ApiVentas\\ApiVentas.csproj",
+        "projectUniqueName": "C:\\Users\\Laptop DTI\\Documents\\Personal\\Clases\\netcore\\BootCamp\\ApiVentas\\ApiVentas.csproj",
         "projectName": "ApiVentas",
-        "projectPath": "C:\\Users\\derec\\OneDrive\\Documents\\Bootcamp\\.NetCore\\ApiVentas\\ApiVentas\\ApiVentas.csproj",
-        "packagesPath": "C:\\Users\\derec\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\derec\\OneDrive\\Documents\\Bootcamp\\.NetCore\\ApiVentas\\ApiVentas\\obj\\",
+        "projectPath": "C:\\Users\\Laptop DTI\\Documents\\Personal\\Clases\\netcore\\BootCamp\\ApiVentas\\ApiVentas.csproj",
+        "packagesPath": "C:\\Users\\Laptop DTI\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Laptop DTI\\Documents\\Personal\\Clases\\netcore\\BootCamp\\ApiVentas\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\derec\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Laptop DTI\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -45,6 +45,26 @@
       "frameworks": {
         "net8.0": {
           "targetAlias": "net8.0",
+          "dependencies": {
+            "Microsoft.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[8.0.7, )"
+            },
+            "Microsoft.EntityFrameworkCore.SqlServer": {
+              "target": "Package",
+              "version": "[8.0.7, )"
+            },
+            "Microsoft.EntityFrameworkCore.Tools": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[8.0.7, )"
+            },
+            "Scrutor": {
+              "target": "Package",
+              "version": "[4.2.2, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",
@@ -64,7 +84,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.302/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.303/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
