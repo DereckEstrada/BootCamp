@@ -9,3 +9,11 @@
 /.vs/ApiVentas/v17/DocumentLayout.json
 *.wsuo
 *.json
+/ApiVentas/obj/Debug/net8.0/ref/ApiVentas.dll
+/ApiVentas/obj/Debug/net8.0/refint/ApiVentas.dll
+/ApiVentas/obj/Debug/net8.0/ApiVentas.AssemblyInfo.cs
+/ApiVentas/obj/Debug/net8.0/ApiVentas.AssemblyInfoInputs.cache
+/ApiVentas/obj/Debug/net8.0/ApiVentas.csproj.CoreCompileInputs.cache
+/ApiVentas/obj/Debug/net8.0/ApiVentas.dll
+/ApiVentas/obj/Debug/net8.0/ApiVentas.pdb
+/ApiVentas/obj/Debug/net8.0/apphost.exe
