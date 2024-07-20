@@ -22,3 +22,12 @@
 /.vs/ProjectEvaluation/apiventas.metadata.v8.bin
 /.vs/ApiVentas/v17/.futdcache.v2
 /.vs/ApiVentas/DesignTimeBuild/.dtbcache.v2
+/ApiVentas/obj/Debug/net8.0/ApiVentas.GeneratedMSBuildEditorConfig.editorconfig
+/ApiVentas/obj/Debug/net8.0/ApiVentas.csproj.AssemblyReference.cache
+/ApiVentas/obj/Debug/net8.0/ApiVentas.assets.cache
+/ApiVentas/obj/Debug/net8.0/ApiVentas.csproj.FileListAbsolute.txt
+/ApiVentas/obj/Debug/net8.0/ApiVentas.genruntimeconfig.cache
+/ApiVentas/obj/ApiVentas.csproj.nuget.dgspec.json
+/ApiVentas/obj/ApiVentas.csproj.nuget.g.props
+/ApiVentas/obj/project.assets.json
+/ApiVentas/obj/project.nuget.cache
