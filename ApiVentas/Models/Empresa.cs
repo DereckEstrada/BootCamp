@@ -19,7 +19,7 @@ public partial class Empresa
 
     public int? CiudadId { get; set; }
 
-    public short? Estado { get; set; }
+    public int? EstadoId { get; set; }
 
     public DateTime? FechaHoraReg { get; set; }
 
@@ -31,9 +31,21 @@ public partial class Empresa
 
     public virtual Ciudad? Ciudad { get; set; }
 
+    public virtual Estado? Estado { get; set; }
+
     public virtual ICollection<MovimientoCab> MovimientoCabs { get; set; } = new List<MovimientoCab>();
+
+    public virtual ICollection<Producto> Productos { get; set; } = new List<Producto>();
 
     public virtual ICollection<PuntoEmisionSri> PuntoEmisionSris { get; set; } = new List<PuntoEmisionSri>();
 
     public virtual ICollection<Stock> Stocks { get; set; } = new List<Stock>();
+
+    public virtual ICollection<Sucursal> Sucursals { get; set; } = new List<Sucursal>();
+
+    public virtual Usuario? UsuIdActNavigation { get; set; }
+
+    public virtual Usuario? UsuIdRegNavigation { get; set; }
+
+    public virtual ICollection<Usuario> Usuarios { get; set; } = new List<Usuario>();
 }

@@ -17,7 +17,7 @@ public partial class PuntoEmisionSri
 
     public int? UltSecuencia { get; set; }
 
-    public short? Estado { get; set; }
+    public int? EstadoId { get; set; }
 
     public DateTime? FechaHoraReg { get; set; }
 
@@ -29,5 +29,13 @@ public partial class PuntoEmisionSri
 
     public virtual Empresa? Empresa { get; set; }
 
+    public virtual Estado? Estado { get; set; }
+
+    public virtual PuntoVentum? PuntoVentum { get; set; }
+
     public virtual Sucursal? Sucursal { get; set; }
+
+    public virtual Usuario? UsuIdActNavigation { get; set; }
+
+    public virtual Usuario? UsuIdRegNavigation { get; set; }
 }

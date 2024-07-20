@@ -15,7 +15,7 @@ public partial class MovimientoDetProducto
 
     public decimal? Precio { get; set; }
 
-    public short? Estado { get; set; }
+    public int? EstadoId { get; set; }
 
     public DateTime? FechaHoraReg { get; set; }
 
@@ -25,7 +25,13 @@ public partial class MovimientoDetProducto
 
     public int? UsuIdAct { get; set; }
 
+    public virtual Estado? Estado { get; set; }
+
     public virtual MovimientoCab? Movicab { get; set; }
 
     public virtual Producto? Producto { get; set; }
+
+    public virtual Usuario? UsuIdActNavigation { get; set; }
+
+    public virtual Usuario? UsuIdRegNavigation { get; set; }
 }

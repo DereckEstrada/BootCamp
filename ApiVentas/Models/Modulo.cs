@@ -9,7 +9,7 @@ public partial class Modulo
 
     public string? ModuloDescripcion { get; set; }
 
-    public short? Estado { get; set; }
+    public int? EstadoId { get; set; }
 
     public DateTime? FechaHoraReg { get; set; }
 
@@ -19,5 +19,13 @@ public partial class Modulo
 
     public int? UsuIdAct { get; set; }
 
+    public virtual Estado? Estado { get; set; }
+
     public virtual ICollection<Opcion> Opcions { get; set; } = new List<Opcion>();
+
+    public virtual Usuario? UsuIdActNavigation { get; set; }
+
+    public virtual Usuario? UsuIdRegNavigation { get; set; }
+
+    public virtual ICollection<UsuarioPermiso> UsuarioPermisos { get; set; } = new List<UsuarioPermiso>();
 }

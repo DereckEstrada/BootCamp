@@ -60,38 +60,73 @@ namespace ejemploEntity.Services
                                                    ClienteNombre = (c.ClienteApellido1 + c.ClienteApellido2 + c.ClienteNombre1 + c.ClienteNombre2),
                                                    PuntovtaNombre = pv.PuntovtaNombre,
                                                    ProveedorNombreComercial = p.ProvNomComercial,
-                                                   Estado = m.Estado,
+                                                   Estado = m.EstadoId,
                                                    FechaHoraReg = m.FechaHoraReg,
                                                    FechaHoraAct = m.FechaHoraAct,
                                                    UsuReg = (from u in qryUsu where m.UsuIdReg == u.UsuId select u.UsuNombre).FirstOrDefault().ToString(),
                                                    UsuAct = (from u in qryUsu where m.UsuIdAct == u.UsuId select u.UsuNombre).FirstOrDefault().ToString(),
-                                                   MovimientoDetPagos = (from dp in qryMovDetPago where m.MovicabId == dp.MovicabId select new MovimientoDetPago()).ToList(),
-                                                   MovimientoDetProductos = (from pro in qryMovDetProd where m.MovicabId == pro.MovicabId select new MovimientoDetProducto()).ToList()
+                                                   MovimientoDetPagos = (from dp in qryMovDetPago
+                                                                         where m.MovicabId == dp.MovicabId
+                                                                         select new MovimientoDetPagoDto
+                                                                         {
+                                                                             MovidetPagoId = dp.MovidetPagoId,
+                                                                             MovicabId = dp.MovicabId,
+                                                                             FpagoId = dp.FpagoId,
+                                                                             ValorPagado = dp.ValorPagado,
+                                                                             IndustriaId = dp.IndustriaId,
+                                                                             Lote = dp.Lote,
+                                                                             Voucher = dp.Voucher,
+                                                                             TarjetacredId = dp.TarjetacredId,
+                                                                             BancoId = dp.BancoId,
+                                                                             ComprobanteId = dp.ComprobanteId,
+                                                                             FechaPago = dp.FechaPago,
+                                                                             EstadoId = dp.EstadoId,
+                                                                             UsuIdReg = dp.UsuIdReg,
+                                                                             FechaHoraReg = dp.FechaHoraReg,
+                                                                             FechaHoraAct = dp.FechaHoraAct,
+                                                                             UsuIdAct = dp.UsuIdAct,
+                                                                             ClienteId = dp.ClienteId
+                                                                         }).ToList(),
+                                                   MovimientoDetProductos = (from pro in qryMovDetProd
+                                                                             where m.MovicabId == pro.MovicabId
+                                                                             select new MovimientoDetProductoDto
+                                                                             {
+                                                                                 MovidetProdId = pro.MovidetProdId,
+                                                                                 MovicabId = pro.MovicabId,
+                                                                                 ProductoId = pro.ProductoId,
+                                                                                 Cantidad = pro.Cantidad,
+                                                                                 Precio = pro.Precio,
+                                                                                 EstadoId = pro.EstadoId,
+                                                                                 FechaHoraReg = pro.FechaHoraReg,
+                                                                                 FechaHoraAct = pro.FechaHoraAct,
+                                                                                 UsuIdReg = pro.UsuIdReg,
+                                                                                 UsuIdAct = pro.UsuIdAct
+                                                                             }).ToList()
                                                }).AsQueryable();
                 #endregion
 
                 if (tipoConsulta == 0 && (SecuenciaFactura == null || SecuenciaFactura == "") && (Cliente == null || Cliente == "") && (Proveedor == null || Proveedor == ""))
                 {
                     resp.code = "200";
-                    resp.data = await q.Where(x => x.Estado.Equals("A")).ToListAsync();
+                    resp.data = await q.Where(x => x.Estado == 1).ToListAsync();
                     resp.mensaje = "OK";
                 }
                 else if (tipoConsulta == 1 && (SecuenciaFactura != null || SecuenciaFactura != "") && (Cliente == null || Cliente == "") && (Proveedor == null || Proveedor == ""))
                 {
                     resp.code = "200";
-                    resp.data = await q.Where(x => x.Estado.Equals("A") && x.SecuenciaFactura.Contains(SecuenciaFactura)).ToListAsync();
+                    resp.data = await q.Where(x => x.Estado == 1 && x.SecuenciaFactura.Contains(SecuenciaFactura)).ToListAsync();
                     resp.mensaje = "OK";
                 }
                 else if (tipoConsulta == 2 && (SecuenciaFactura == null || SecuenciaFactura == "") && (Cliente != null || Cliente != "") && (Proveedor == null || Proveedor == ""))
                 {
                     resp.code = "200";
-                    resp.data = await q.Where(x => x.Estado.Equals("A") && x.ClienteNombre.Equals(Cliente)).ToListAsync();
+                    resp.data = await q.Where(x => x.Estado == 1 && x.ClienteNombre.Equals(Cliente)).ToListAsync();
                     resp.mensaje = "OK";
                 }
                 else if (tipoConsulta == 3 && (SecuenciaFactura == null || SecuenciaFactura == "") && (Cliente == null || Cliente == "") && (Proveedor != null || Proveedor != ""))
                 {
                     resp.code = "200";
-                    resp.data = await q.Where(x => x.Estado.Equals("A") && x.ProveedorNombreComercial.Equals(Proveedor)).ToListAsync();
+                    resp.data = await q.Where(x => x.Estado == 1 && x.ProveedorNombreComercial.Equals(Proveedor)).ToListAsync();
                     resp.mensaje = "OK";
                 }
                 else
@@ -204,7 +239,7 @@ namespace ejemploEntity.Services
                 {
 
                     movCab.FechaHoraReg = DateTime.Now;
-                    movCab.Estado = "I";
+                    movCab.EstadoId = 0;
 
                     qry.Update(movCab);
                     await _context.SaveChangesAsync();

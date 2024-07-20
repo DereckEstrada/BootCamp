@@ -15,7 +15,7 @@ public partial class Sucursal
 
     public string? SucursalTelefono { get; set; }
 
-    public short? Estado { get; set; }
+    public int? EstadoId { get; set; }
 
     public DateTime? FechaHoraReg { get; set; }
 
@@ -31,7 +31,19 @@ public partial class Sucursal
 
     public virtual ICollection<Bodega> Bodegas { get; set; } = new List<Bodega>();
 
+    public virtual Empresa? Empresa { get; set; }
+
+    public virtual Estado? Estado { get; set; }
+
     public virtual ICollection<MovimientoCab> MovimientoCabs { get; set; } = new List<MovimientoCab>();
 
     public virtual ICollection<PuntoEmisionSri> PuntoEmisionSris { get; set; } = new List<PuntoEmisionSri>();
+
+    public virtual ICollection<PuntoVentum> PuntoVenta { get; set; } = new List<PuntoVentum>();
+
+    public virtual ICollection<Stock> Stocks { get; set; } = new List<Stock>();
+
+    public virtual Usuario? UsuIdActNavigation { get; set; }
+
+    public virtual Usuario? UsuIdRegNavigation { get; set; }
 }

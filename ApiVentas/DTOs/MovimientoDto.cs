@@ -28,7 +28,7 @@ namespace ApiVentas.DTOs
 
         public string? ProveedorNombreComercial { get; set; }
 
-        public string? Estado { get; set; }
+        public int? Estado { get; set; }
 
         public DateTime? FechaHoraReg { get; set; }
 
@@ -42,9 +42,9 @@ namespace ApiVentas.DTOs
 
         //public virtual Empresa? Empresa { get; set; }
 
-        public virtual ICollection<MovimientoDetPago> MovimientoDetPagos { get; set; } = new List<MovimientoDetPago>();
+        public virtual ICollection<MovimientoDetPagoDto> MovimientoDetPagos { get; set; } = new List<MovimientoDetPagoDto>();
 
-        public virtual ICollection<MovimientoDetProducto> MovimientoDetProductos { get; set; } = new List<MovimientoDetProducto>();
+        public virtual ICollection<MovimientoDetProductoDto> MovimientoDetProductos { get; set; } = new List<MovimientoDetProductoDto>();
 
         //public virtual Proveedor? Proveedor { get; set; }
 

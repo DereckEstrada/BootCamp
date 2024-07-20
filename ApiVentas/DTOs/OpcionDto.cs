@@ -8,7 +8,7 @@ namespace ApiVentas.DTOs
 
         public string? OpcionDescripcion { get; set; }
 
-        public short? Estado { get; set; }
+        public int? Estado { get; set; }
 
         public DateTime? FechaHoraReg { get; set; }
 

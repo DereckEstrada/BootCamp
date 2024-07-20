@@ -31,7 +31,7 @@ namespace ejemploEntity.Services
                                         {
                                             PaisId = p.PaisId,
                                             PaisNombre = p.PaisNombre,
-                                            Estado = p.Estado,
+                                            Estado = p.EstadoId,
                                             FechaHoraReg = p.FechaHoraReg,
                                             FechaHoraAct = p.FechaHoraAct,
                                             UsuReg = (from u in qryUsu where p.UsuIdReg == u.UsuId select u.UsuNombre).FirstOrDefault().ToString(),
@@ -155,7 +155,7 @@ namespace ejemploEntity.Services
 
             try
             {
-                pa = qry.Where(x => x.PaisId == PaisId && x.Estado == 1).FirstOrDefault();
+                pa = qry.Where(x => x.PaisId == PaisId && x.EstadoId == 1).FirstOrDefault();
 
                 if (pa.PaisId == null || pa.PaisId == 0)
                 {
@@ -167,7 +167,7 @@ namespace ejemploEntity.Services
                 {
 
                     pa.FechaHoraReg = DateTime.Now;
-                    pa.Estado = 0;
+                    pa.EstadoId = 0;
 
                     qry.Update(pa);
                     await _context.SaveChangesAsync();

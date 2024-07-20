@@ -9,7 +9,7 @@ public partial class FormaPago
 
     public string? FpagoDescripcion { get; set; }
 
-    public short? Estado { get; set; }
+    public int? EstadoId { get; set; }
 
     public DateTime? FechaHoraReg { get; set; }
 
@@ -19,5 +19,11 @@ public partial class FormaPago
 
     public int? UsuIdAct { get; set; }
 
+    public virtual Estado? Estado { get; set; }
+
     public virtual ICollection<MovimientoDetPago> MovimientoDetPagos { get; set; } = new List<MovimientoDetPago>();
+
+    public virtual Usuario? UsuIdActNavigation { get; set; }
+
+    public virtual Usuario? UsuIdRegNavigation { get; set; }
 }

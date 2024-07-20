@@ -25,6 +25,8 @@ public partial class BaseErpContext : DbContext
 
     public virtual DbSet<Empresa> Empresas { get; set; }
 
+    public virtual DbSet<Estado> Estados { get; set; }
+
     public virtual DbSet<FormaPago> FormaPagos { get; set; }
 
     public virtual DbSet<Industrium> Industria { get; set; }
@@ -65,11 +67,12 @@ public partial class BaseErpContext : DbContext
 
     public virtual DbSet<UsuarioRol> UsuarioRols { get; set; }
 
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
+        => optionsBuilder.UseSqlServer("Server=DESKTOP-RN0JGF1\\SQLEXPRESS;Database=BASE_ERP;Integrated Security=true;TrustServerCertificate=True;User=sa;Password=sa");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.UseCollation("Modern_Spanish_CI_AS");
-
         modelBuilder.Entity<Bodega>(entity =>
         {
             entity.HasKey(e => e.BodegaId).HasName("_copy_3");
@@ -91,7 +94,7 @@ public partial class BaseErpContext : DbContext
                 .HasMaxLength(100)
                 .IsUnicode(false)
                 .HasColumnName("bodega_telefono");
-            entity.Property(e => e.Estado).HasColumnName("estado");
+            entity.Property(e => e.EstadoId).HasColumnName("estado_id");
             entity.Property(e => e.FechaHoraAct)
                 .HasColumnType("datetime")
                 .HasColumnName("fecha_hora_act");
@@ -102,10 +105,22 @@ public partial class BaseErpContext : DbContext
             entity.Property(e => e.UsuIdAct).HasColumnName("usu_id_act");
             entity.Property(e => e.UsuIdReg).HasColumnName("usu_id_reg");
 
+            entity.HasOne(d => d.Estado).WithMany(p => p.Bodegas)
+                .HasForeignKey(d => d.EstadoId)
+                .HasConstraintName("fk_bodega_estado");
+
             entity.HasOne(d => d.Sucursal).WithMany(p => p.Bodegas)
                 .HasForeignKey(d => d.SucursalId)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_bodega_sucursal");
+
+            entity.HasOne(d => d.UsuIdActNavigation).WithMany(p => p.BodegaUsuIdActNavigations)
+                .HasForeignKey(d => d.UsuIdAct)
+                .HasConstraintName("fk_bodega_user_act");
+
+            entity.HasOne(d => d.UsuIdRegNavigation).WithMany(p => p.BodegaUsuIdRegNavigations)
+                .HasForeignKey(d => d.UsuIdReg)
+                .HasConstraintName("fk_bodega_user_reg");
         });
 
         modelBuilder.Entity<Categorium>(entity =>
@@ -121,7 +136,7 @@ public partial class BaseErpContext : DbContext
                 .HasMaxLength(100)
                 .IsUnicode(false)
                 .HasColumnName("categoria_descrip");
-            entity.Property(e => e.Estado).HasColumnName("estado");
+            entity.Property(e => e.EstadoId).HasColumnName("estado_id");
             entity.Property(e => e.FechaHoraAct)
                 .HasColumnType("datetime")
                 .HasColumnName("fecha_hora_act");
@@ -130,6 +145,18 @@ public partial class BaseErpContext : DbContext
                 .HasColumnName("fecha_hora_reg");
             entity.Property(e => e.UsuIdAct).HasColumnName("usu_id_act");
             entity.Property(e => e.UsuIdReg).HasColumnName("usu_id_reg");
+
+            entity.HasOne(d => d.Estado).WithMany(p => p.Categoria)
+                .HasForeignKey(d => d.EstadoId)
+                .HasConstraintName("fk_categoria_estado");
+
+            entity.HasOne(d => d.UsuIdActNavigation).WithMany(p => p.CategoriumUsuIdActNavigations)
+                .HasForeignKey(d => d.UsuIdAct)
+                .HasConstraintName("fk_categoria_user_act");
+
+            entity.HasOne(d => d.UsuIdRegNavigation).WithMany(p => p.CategoriumUsuIdRegNavigations)
+                .HasForeignKey(d => d.UsuIdReg)
+                .HasConstraintName("fk_categoria_user_reg");
         });
 
         modelBuilder.Entity<Ciudad>(entity =>
@@ -145,7 +172,7 @@ public partial class BaseErpContext : DbContext
                 .HasMaxLength(150)
                 .IsUnicode(false)
                 .HasColumnName("ciudad_nombre");
-            entity.Property(e => e.Estado).HasColumnName("estado");
+            entity.Property(e => e.EstadoId).HasColumnName("estado_id");
             entity.Property(e => e.FechaHoraAct)
                 .HasColumnType("datetime")
                 .HasColumnName("fecha_hora_act");
@@ -156,10 +183,22 @@ public partial class BaseErpContext : DbContext
             entity.Property(e => e.UsuIdAct).HasColumnName("usu_id_act");
             entity.Property(e => e.UsuIdReg).HasColumnName("usu_id_reg");
 
+            entity.HasOne(d => d.Estado).WithMany(p => p.Ciudads)
+                .HasForeignKey(d => d.EstadoId)
+                .HasConstraintName("fk_ciudad_estado");
+
             entity.HasOne(d => d.Pais).WithMany(p => p.Ciudads)
                 .HasForeignKey(d => d.PaisId)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("kf_ciudad_pais");
+
+            entity.HasOne(d => d.UsuIdActNavigation).WithMany(p => p.CiudadUsuIdActNavigations)
+                .HasForeignKey(d => d.UsuIdAct)
+                .HasConstraintName("fk_ciudad_user_act");
+
+            entity.HasOne(d => d.UsuIdRegNavigation).WithMany(p => p.CiudadUsuIdRegNavigations)
+                .HasForeignKey(d => d.UsuIdReg)
+                .HasConstraintName("fk_ciudad_user_reg");
         });
 
         modelBuilder.Entity<Cliente>(entity =>
@@ -203,13 +242,27 @@ public partial class BaseErpContext : DbContext
                 .HasMaxLength(100)
                 .IsUnicode(false)
                 .HasColumnName("cliente_telefono");
-            entity.Property(e => e.Estado).HasColumnName("estado");
-            entity.Property(e => e.FechaHoraAct).HasColumnName("fecha_hora_act");
+            entity.Property(e => e.EstadoId).HasColumnName("estado_id");
+            entity.Property(e => e.FechaHoraAct)
+                .HasColumnType("datetime")
+                .HasColumnName("fecha_hora_act");
             entity.Property(e => e.FechaHoraReg)
                 .HasColumnType("datetime")
                 .HasColumnName("fecha_hora_reg");
             entity.Property(e => e.UsuIdAct).HasColumnName("usu_id_act");
             entity.Property(e => e.UsuIdReg).HasColumnName("usu_id_reg");
+
+            entity.HasOne(d => d.Estado).WithMany(p => p.Clientes)
+                .HasForeignKey(d => d.EstadoId)
+                .HasConstraintName("fk_cliente_estado");
+
+            entity.HasOne(d => d.UsuIdActNavigation).WithMany(p => p.ClienteUsuIdActNavigations)
+                .HasForeignKey(d => d.UsuIdAct)
+                .HasConstraintName("fk_cliente_user_act");
+
+            entity.HasOne(d => d.UsuIdRegNavigation).WithMany(p => p.ClienteUsuIdRegNavigations)
+                .HasForeignKey(d => d.UsuIdReg)
+                .HasConstraintName("fk_cliente_user_reg");
         });
 
         modelBuilder.Entity<Empresa>(entity =>
@@ -242,7 +295,7 @@ public partial class BaseErpContext : DbContext
                 .HasMaxLength(100)
                 .IsUnicode(false)
                 .HasColumnName("empresa_telefono_matriz");
-            entity.Property(e => e.Estado).HasColumnName("estado");
+            entity.Property(e => e.EstadoId).HasColumnName("estado_id");
             entity.Property(e => e.FechaHoraAct)
                 .HasColumnType("datetime")
                 .HasColumnName("fecha_hora_act");
@@ -256,6 +309,54 @@ public partial class BaseErpContext : DbContext
                 .HasForeignKey(d => d.CiudadId)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_empresa_ciudad");
+
+            entity.HasOne(d => d.Estado).WithMany(p => p.Empresas)
+                .HasForeignKey(d => d.EstadoId)
+                .HasConstraintName("fk_empresa_estado");
+
+            entity.HasOne(d => d.UsuIdActNavigation).WithMany(p => p.EmpresaUsuIdActNavigations)
+                .HasForeignKey(d => d.UsuIdAct)
+                .HasConstraintName("fk_empresa_user_act");
+
+            entity.HasOne(d => d.UsuIdRegNavigation).WithMany(p => p.EmpresaUsuIdRegNavigations)
+                .HasForeignKey(d => d.UsuIdReg)
+                .HasConstraintName("fk_empresa_user_reg");
+        });
+
+        modelBuilder.Entity<Estado>(entity =>
+        {
+            entity.HasKey(e => e.EstadoId).HasName("PK__Estado__053774EF81CD25E1");
+
+            entity.ToTable("ESTADO");
+
+            entity.Property(e => e.EstadoId)
+                .ValueGeneratedNever()
+                .HasColumnName("estado_id");
+            entity.Property(e => e.EstadoDescrip)
+                .HasMaxLength(200)
+                .IsUnicode(false)
+                .HasColumnName("estado_descrip");
+            entity.Property(e => e.EstadoFk).HasColumnName("estado_fk");
+            entity.Property(e => e.FechaHoraAct)
+                .HasColumnType("datetime")
+                .HasColumnName("fecha_hora_act");
+            entity.Property(e => e.FechaHoraReg)
+                .HasColumnType("datetime")
+                .HasColumnName("fecha_hora_reg");
+            entity.Property(e => e.UsuIdAct).HasColumnName("usu_id_act");
+            entity.Property(e => e.UsuIdReg).HasColumnName("usu_id_reg");
+
+            entity.HasOne(d => d.EstadoFkNavigation).WithMany(p => p.InverseEstadoFkNavigation)
+                .HasForeignKey(d => d.EstadoFk)
+                .HasConstraintName("fk_estado");
+
+            entity.HasOne(d => d.UsuIdActNavigation).WithMany(p => p.EstadoUsuIdActNavigations)
+                .HasForeignKey(d => d.UsuIdAct)
+                .HasConstraintName("fk_estado_user_act");
+
+            entity.HasOne(d => d.UsuIdRegNavigation).WithMany(p => p.EstadoUsuIdRegNavigations)
+                .HasForeignKey(d => d.UsuIdReg)
+                .HasConstraintName("fk_estado_user_reg");
         });
 
         modelBuilder.Entity<FormaPago>(entity =>
@@ -267,7 +368,7 @@ public partial class BaseErpContext : DbContext
             entity.Property(e => e.FpagoId)
                 .ValueGeneratedNever()
                 .HasColumnName("fpago_id");
-            entity.Property(e => e.Estado).HasColumnName("estado");
+            entity.Property(e => e.EstadoId).HasColumnName("estado_id");
             entity.Property(e => e.FechaHoraAct)
                 .HasColumnType("datetime")
                 .HasColumnName("fecha_hora_act");
@@ -280,6 +381,18 @@ public partial class BaseErpContext : DbContext
                 .HasColumnName("fpago_descripcion");
             entity.Property(e => e.UsuIdAct).HasColumnName("usu_id_act");
             entity.Property(e => e.UsuIdReg).HasColumnName("usu_id_reg");
+
+            entity.HasOne(d => d.Estado).WithMany(p => p.FormaPagos)
+                .HasForeignKey(d => d.EstadoId)
+                .HasConstraintName("fk_forma_pa_estado");
+
+            entity.HasOne(d => d.UsuIdActNavigation).WithMany(p => p.FormaPagoUsuIdActNavigations)
+                .HasForeignKey(d => d.UsuIdAct)
+                .HasConstraintName("fk_forma_pa_user_act");
+
+            entity.HasOne(d => d.UsuIdRegNavigation).WithMany(p => p.FormaPagoUsuIdRegNavigations)
+                .HasForeignKey(d => d.UsuIdReg)
+                .HasConstraintName("fk_forma_pa_user_reg");
         });
 
         modelBuilder.Entity<Industrium>(entity =>
@@ -291,7 +404,7 @@ public partial class BaseErpContext : DbContext
             entity.Property(e => e.IndustriaId)
                 .ValueGeneratedNever()
                 .HasColumnName("industria_id");
-            entity.Property(e => e.Estado).HasColumnName("estado");
+            entity.Property(e => e.EstadoId).HasColumnName("estado_id");
             entity.Property(e => e.FechaHoraAct)
                 .HasColumnType("datetime")
                 .HasColumnName("fecha_hora_act");
@@ -304,6 +417,18 @@ public partial class BaseErpContext : DbContext
                 .HasColumnName("industria_descripcion");
             entity.Property(e => e.UsuIdAct).HasColumnName("usu_id_act");
             entity.Property(e => e.UsuIdReg).HasColumnName("usu_id_reg");
+
+            entity.HasOne(d => d.Estado).WithMany(p => p.Industria)
+                .HasForeignKey(d => d.EstadoId)
+                .HasConstraintName("fk_industria_estado");
+
+            entity.HasOne(d => d.UsuIdActNavigation).WithMany(p => p.IndustriumUsuIdActNavigations)
+                .HasForeignKey(d => d.UsuIdAct)
+                .HasConstraintName("fk_industria_user_act");
+
+            entity.HasOne(d => d.UsuIdRegNavigation).WithMany(p => p.IndustriumUsuIdRegNavigations)
+                .HasForeignKey(d => d.UsuIdReg)
+                .HasConstraintName("fk_industria_user_reg");
         });
 
         modelBuilder.Entity<Modulo>(entity =>
@@ -315,7 +440,7 @@ public partial class BaseErpContext : DbContext
             entity.Property(e => e.ModuloId)
                 .ValueGeneratedNever()
                 .HasColumnName("modulo_id");
-            entity.Property(e => e.Estado).HasColumnName("estado");
+            entity.Property(e => e.EstadoId).HasColumnName("estado_id");
             entity.Property(e => e.FechaHoraAct)
                 .HasColumnType("datetime")
                 .HasColumnName("fecha_hora_act");
@@ -328,6 +453,18 @@ public partial class BaseErpContext : DbContext
                 .HasColumnName("modulo_descripcion");
             entity.Property(e => e.UsuIdAct).HasColumnName("usu_id_act");
             entity.Property(e => e.UsuIdReg).HasColumnName("usu_id_reg");
+
+            entity.HasOne(d => d.Estado).WithMany(p => p.Modulos)
+                .HasForeignKey(d => d.EstadoId)
+                .HasConstraintName("fk_modulo_estado");
+
+            entity.HasOne(d => d.UsuIdActNavigation).WithMany(p => p.ModuloUsuIdActNavigations)
+                .HasForeignKey(d => d.UsuIdAct)
+                .HasConstraintName("fk_modulo_user_act");
+
+            entity.HasOne(d => d.UsuIdRegNavigation).WithMany(p => p.ModuloUsuIdRegNavigations)
+                .HasForeignKey(d => d.UsuIdReg)
+                .HasConstraintName("fk_modulo_user_reg");
         });
 
         modelBuilder.Entity<MovimientoCab>(entity =>
@@ -350,10 +487,7 @@ public partial class BaseErpContext : DbContext
                 .HasColumnName("clave_acceso");
             entity.Property(e => e.ClienteId).HasColumnName("cliente_id");
             entity.Property(e => e.EmpresaId).HasColumnName("empresa_id");
-            entity.Property(e => e.Estado)
-                .HasMaxLength(255)
-                .IsUnicode(false)
-                .HasColumnName("estado");
+            entity.Property(e => e.EstadoId).HasColumnName("estado_id");
             entity.Property(e => e.FechaHoraAct)
                 .HasColumnType("datetime")
                 .HasColumnName("fecha_hora_act");
@@ -372,6 +506,10 @@ public partial class BaseErpContext : DbContext
             entity.Property(e => e.UsuIdAct).HasColumnName("usu_id_act");
             entity.Property(e => e.UsuIdReg).HasColumnName("usu_id_reg");
 
+            entity.HasOne(d => d.Bodega).WithMany(p => p.MovimientoCabs)
+                .HasForeignKey(d => d.BodegaId)
+                .HasConstraintName("fk_movim_bodega");
+
             entity.HasOne(d => d.Cliente).WithMany(p => p.MovimientoCabs)
                 .HasForeignKey(d => d.ClienteId)
                 .OnDelete(DeleteBehavior.Cascade)
@@ -382,10 +520,18 @@ public partial class BaseErpContext : DbContext
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_movim_empresa");
 
+            entity.HasOne(d => d.Estado).WithMany(p => p.MovimientoCabs)
+                .HasForeignKey(d => d.EstadoId)
+                .HasConstraintName("fk_movim_estado");
+
             entity.HasOne(d => d.Proveedor).WithMany(p => p.MovimientoCabs)
                 .HasForeignKey(d => d.ProveedorId)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_movim_proveedor");
+
+            entity.HasOne(d => d.Puntovta).WithMany(p => p.MovimientoCabs)
+                .HasForeignKey(d => d.PuntovtaId)
+                .HasConstraintName("fk_movim_puntovta");
 
             entity.HasOne(d => d.Sucursal).WithMany(p => p.MovimientoCabs)
                 .HasForeignKey(d => d.SucursalId)
@@ -397,10 +543,13 @@ public partial class BaseErpContext : DbContext
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_movim_tipo");
 
-            entity.HasOne(d => d.UsuIdRegNavigation).WithMany(p => p.MovimientoCabs)
+            entity.HasOne(d => d.UsuIdActNavigation).WithMany(p => p.MovimientoCabUsuIdActNavigations)
+                .HasForeignKey(d => d.UsuIdAct)
+                .HasConstraintName("fk_movim_user_act");
+
+            entity.HasOne(d => d.UsuIdRegNavigation).WithMany(p => p.MovimientoCabUsuIdRegNavigations)
                 .HasForeignKey(d => d.UsuIdReg)
-                .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("fk_movim_usu_reg");
+                .HasConstraintName("fk_movim_user_reg");
         });
 
         modelBuilder.Entity<MovimientoDetPago>(entity =>
@@ -415,9 +564,15 @@ public partial class BaseErpContext : DbContext
             entity.Property(e => e.BancoId).HasColumnName("banco_id");
             entity.Property(e => e.ClienteId).HasColumnName("cliente_id");
             entity.Property(e => e.ComprobanteId).HasColumnName("comprobante_id");
+            entity.Property(e => e.EstadoId).HasColumnName("estado_id");
+            entity.Property(e => e.FechaHoraAct)
+                .HasColumnType("datetime")
+                .HasColumnName("fecha_hora_act");
+            entity.Property(e => e.FechaHoraReg)
+                .HasColumnType("datetime")
+                .HasColumnName("fecha_hora_reg");
             entity.Property(e => e.FechaPago)
-                .HasMaxLength(255)
-                .IsUnicode(false)
+                .HasColumnType("datetime")
                 .HasColumnName("fecha_pago");
             entity.Property(e => e.FpagoId).HasColumnName("fpago_id");
             entity.Property(e => e.IndustriaId).HasColumnName("industria_id");
@@ -427,6 +582,8 @@ public partial class BaseErpContext : DbContext
                 .HasColumnName("lote");
             entity.Property(e => e.MovicabId).HasColumnName("movicab_id");
             entity.Property(e => e.TarjetacredId).HasColumnName("tarjetacred_id");
+            entity.Property(e => e.UsuIdAct).HasColumnName("usu_id_act");
+            entity.Property(e => e.UsuIdReg).HasColumnName("usu_id_reg");
             entity.Property(e => e.ValorPagado)
                 .HasColumnType("decimal(10, 2)")
                 .HasColumnName("valor_pagado");
@@ -435,10 +592,22 @@ public partial class BaseErpContext : DbContext
                 .IsUnicode(false)
                 .HasColumnName("voucher");
 
+            entity.HasOne(d => d.Cliente).WithMany(p => p.MovimientoDetPagos)
+                .HasForeignKey(d => d.ClienteId)
+                .HasConstraintName("fk_movimen_cliente");
+
+            entity.HasOne(d => d.Estado).WithMany(p => p.MovimientoDetPagos)
+                .HasForeignKey(d => d.EstadoId)
+                .HasConstraintName("fk_movimen_estado");
+
             entity.HasOne(d => d.Fpago).WithMany(p => p.MovimientoDetPagos)
                 .HasForeignKey(d => d.FpagoId)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_movidet_fpago");
+
+            entity.HasOne(d => d.Industria).WithMany(p => p.MovimientoDetPagos)
+                .HasForeignKey(d => d.IndustriaId)
+                .HasConstraintName("fk_movimen_industria");
 
             entity.HasOne(d => d.Movicab).WithMany(p => p.MovimientoDetPagos)
                 .HasForeignKey(d => d.MovicabId)
@@ -449,6 +618,14 @@ public partial class BaseErpContext : DbContext
                 .HasForeignKey(d => d.TarjetacredId)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_movidet_tarjeta");
+
+            entity.HasOne(d => d.UsuIdActNavigation).WithMany(p => p.MovimientoDetPagoUsuIdActNavigations)
+                .HasForeignKey(d => d.UsuIdAct)
+                .HasConstraintName("fk_movimen_user_act");
+
+            entity.HasOne(d => d.UsuIdRegNavigation).WithMany(p => p.MovimientoDetPagoUsuIdRegNavigations)
+                .HasForeignKey(d => d.UsuIdReg)
+                .HasConstraintName("fk_movimen_user_reg");
         });
 
         modelBuilder.Entity<MovimientoDetProducto>(entity =>
@@ -461,7 +638,7 @@ public partial class BaseErpContext : DbContext
                 .ValueGeneratedNever()
                 .HasColumnName("movidet_prod_id");
             entity.Property(e => e.Cantidad).HasColumnName("cantidad");
-            entity.Property(e => e.Estado).HasColumnName("estado");
+            entity.Property(e => e.EstadoId).HasColumnName("estado_id");
             entity.Property(e => e.FechaHoraAct)
                 .HasColumnType("datetime")
                 .HasColumnName("fecha_hora_act");
@@ -476,6 +653,10 @@ public partial class BaseErpContext : DbContext
             entity.Property(e => e.UsuIdAct).HasColumnName("usu_id_act");
             entity.Property(e => e.UsuIdReg).HasColumnName("usu_id_reg");
 
+            entity.HasOne(d => d.Estado).WithMany(p => p.MovimientoDetProductos)
+                .HasForeignKey(d => d.EstadoId)
+                .HasConstraintName("fk_movimen_prod_estado");
+
             entity.HasOne(d => d.Movicab).WithMany(p => p.MovimientoDetProductos)
                 .HasForeignKey(d => d.MovicabId)
                 .OnDelete(DeleteBehavior.Cascade)
@@ -485,6 +666,14 @@ public partial class BaseErpContext : DbContext
                 .HasForeignKey(d => d.ProductoId)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_movidet_prod");
+
+            entity.HasOne(d => d.UsuIdActNavigation).WithMany(p => p.MovimientoDetProductoUsuIdActNavigations)
+                .HasForeignKey(d => d.UsuIdAct)
+                .HasConstraintName("fk_movimen_prod_user_act");
+
+            entity.HasOne(d => d.UsuIdRegNavigation).WithMany(p => p.MovimientoDetProductoUsuIdRegNavigations)
+                .HasForeignKey(d => d.UsuIdReg)
+                .HasConstraintName("fk_movimen_prod_user_reg");
         });
 
         modelBuilder.Entity<Opcion>(entity =>
@@ -496,7 +685,7 @@ public partial class BaseErpContext : DbContext
             entity.Property(e => e.OpcionId)
                 .ValueGeneratedNever()
                 .HasColumnName("opcion_id");
-            entity.Property(e => e.Estado).HasColumnName("estado");
+            entity.Property(e => e.EstadoId).HasColumnName("estado_id");
             entity.Property(e => e.FechaHoraAct)
                 .HasColumnType("datetime")
                 .HasColumnName("fecha_hora_act");
@@ -511,10 +700,22 @@ public partial class BaseErpContext : DbContext
             entity.Property(e => e.UsuIdAct).HasColumnName("usu_id_act");
             entity.Property(e => e.UsuIdReg).HasColumnName("usu_id_reg");
 
+            entity.HasOne(d => d.Estado).WithMany(p => p.Opcions)
+                .HasForeignKey(d => d.EstadoId)
+                .HasConstraintName("fk_opcion_estado");
+
             entity.HasOne(d => d.Modulo).WithMany(p => p.Opcions)
                 .HasForeignKey(d => d.ModuloId)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_opcion_modulo");
+
+            entity.HasOne(d => d.UsuIdActNavigation).WithMany(p => p.OpcionUsuIdActNavigations)
+                .HasForeignKey(d => d.UsuIdAct)
+                .HasConstraintName("fk_opcion_user_act");
+
+            entity.HasOne(d => d.UsuIdRegNavigation).WithMany(p => p.OpcionUsuIdRegNavigations)
+                .HasForeignKey(d => d.UsuIdReg)
+                .HasConstraintName("fk_opcion_user_reg");
         });
 
         modelBuilder.Entity<Pai>(entity =>
@@ -526,7 +727,7 @@ public partial class BaseErpContext : DbContext
             entity.Property(e => e.PaisId)
                 .ValueGeneratedNever()
                 .HasColumnName("pais_id");
-            entity.Property(e => e.Estado).HasColumnName("estado");
+            entity.Property(e => e.EstadoId).HasColumnName("estado_id");
             entity.Property(e => e.FechaHoraAct)
                 .HasColumnType("datetime")
                 .HasColumnName("fecha_hora_act");
@@ -539,6 +740,18 @@ public partial class BaseErpContext : DbContext
                 .HasColumnName("pais_nombre");
             entity.Property(e => e.UsuIdAct).HasColumnName("usu_id_act");
             entity.Property(e => e.UsuIdReg).HasColumnName("usu_id_reg");
+
+            entity.HasOne(d => d.Estado).WithMany(p => p.Pais)
+                .HasForeignKey(d => d.EstadoId)
+                .HasConstraintName("fk_pais_estado");
+
+            entity.HasOne(d => d.UsuIdActNavigation).WithMany(p => p.PaiUsuIdActNavigations)
+                .HasForeignKey(d => d.UsuIdAct)
+                .HasConstraintName("fk_pais_user_act");
+
+            entity.HasOne(d => d.UsuIdRegNavigation).WithMany(p => p.PaiUsuIdRegNavigations)
+                .HasForeignKey(d => d.UsuIdReg)
+                .HasConstraintName("fk_pais_user_reg");
         });
 
         modelBuilder.Entity<Producto>(entity =>
@@ -552,7 +765,7 @@ public partial class BaseErpContext : DbContext
                 .HasColumnName("prod_id");
             entity.Property(e => e.CategoriaId).HasColumnName("categoria_id");
             entity.Property(e => e.EmpresaId).HasColumnName("empresa_id");
-            entity.Property(e => e.Estado).HasColumnName("estado");
+            entity.Property(e => e.EstadoId).HasColumnName("estado_id");
             entity.Property(e => e.FechaHoraAct)
                 .HasColumnType("datetime")
                 .HasColumnName("fecha_hora_act");
@@ -573,6 +786,26 @@ public partial class BaseErpContext : DbContext
             entity.HasOne(d => d.Categoria).WithMany(p => p.Productos)
                 .HasForeignKey(d => d.CategoriaId)
                 .HasConstraintName("FK_PRODUCTO_CATEGORIA");
+
+            entity.HasOne(d => d.Empresa).WithMany(p => p.Productos)
+                .HasForeignKey(d => d.EmpresaId)
+                .HasConstraintName("fk_producto_empresa");
+
+            entity.HasOne(d => d.Estado).WithMany(p => p.Productos)
+                .HasForeignKey(d => d.EstadoId)
+                .HasConstraintName("fk_producto_estado");
+
+            entity.HasOne(d => d.Proveedor).WithMany(p => p.Productos)
+                .HasForeignKey(d => d.ProveedorId)
+                .HasConstraintName("fk_producto_proveedor");
+
+            entity.HasOne(d => d.UsuIdActNavigation).WithMany(p => p.ProductoUsuIdActNavigations)
+                .HasForeignKey(d => d.UsuIdAct)
+                .HasConstraintName("fk_producto_user_act");
+
+            entity.HasOne(d => d.UsuIdRegNavigation).WithMany(p => p.ProductoUsuIdRegNavigations)
+                .HasForeignKey(d => d.UsuIdReg)
+                .HasConstraintName("fk_producto_user_reg");
         });
 
         modelBuilder.Entity<Proveedor>(entity =>
@@ -585,10 +818,7 @@ public partial class BaseErpContext : DbContext
                 .ValueGeneratedNever()
                 .HasColumnName("prov_id");
             entity.Property(e => e.CiudadId).HasColumnName("ciudad_id");
-            entity.Property(e => e.Estado)
-                .HasMaxLength(255)
-                .IsUnicode(false)
-                .HasColumnName("estado");
+            entity.Property(e => e.EstadoId).HasColumnName("estado_id");
             entity.Property(e => e.FechaHoraAct)
                 .HasColumnType("datetime")
                 .HasColumnName("fecha_hora_act");
@@ -611,9 +841,28 @@ public partial class BaseErpContext : DbContext
                 .HasMaxLength(13)
                 .IsUnicode(false)
                 .HasColumnName("prov_ruc");
-            entity.Property(e => e.ProvTelefono).HasColumnName("prov_telefono");
+            entity.Property(e => e.ProvTelefono)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("prov_telefono");
             entity.Property(e => e.UsuIdAct).HasColumnName("usu_id_act");
             entity.Property(e => e.UsuIdReg).HasColumnName("usu_id_reg");
+
+            entity.HasOne(d => d.Ciudad).WithMany(p => p.Proveedors)
+                .HasForeignKey(d => d.CiudadId)
+                .HasConstraintName("fk_proveedor_ciudad");
+
+            entity.HasOne(d => d.Estado).WithMany(p => p.Proveedors)
+                .HasForeignKey(d => d.EstadoId)
+                .HasConstraintName("fk_proveedor_estado");
+
+            entity.HasOne(d => d.UsuIdActNavigation).WithMany(p => p.ProveedorUsuIdActNavigations)
+                .HasForeignKey(d => d.UsuIdAct)
+                .HasConstraintName("fk_proveedor_user_act");
+
+            entity.HasOne(d => d.UsuIdRegNavigation).WithMany(p => p.ProveedorUsuIdRegNavigations)
+                .HasForeignKey(d => d.UsuIdReg)
+                .HasConstraintName("fk_proveedor_user_reg");
         });
 
         modelBuilder.Entity<PuntoEmisionSri>(entity =>
@@ -630,7 +879,7 @@ public partial class BaseErpContext : DbContext
                 .IsUnicode(false)
                 .HasColumnName("cod_establecimiento_sri");
             entity.Property(e => e.EmpresaId).HasColumnName("empresa_id");
-            entity.Property(e => e.Estado).HasColumnName("estado");
+            entity.Property(e => e.EstadoId).HasColumnName("estado_id");
             entity.Property(e => e.FechaHoraAct)
                 .HasColumnType("datetime")
                 .HasColumnName("fecha_hora_act");
@@ -652,19 +901,34 @@ public partial class BaseErpContext : DbContext
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_puntoemi_empresa");
 
+            entity.HasOne(d => d.Estado).WithMany(p => p.PuntoEmisionSris)
+                .HasForeignKey(d => d.EstadoId)
+                .HasConstraintName("fk_punto_em_estado");
+
             entity.HasOne(d => d.Sucursal).WithMany(p => p.PuntoEmisionSris)
                 .HasForeignKey(d => d.SucursalId)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_puntoemi_sucursal");
+
+            entity.HasOne(d => d.UsuIdActNavigation).WithMany(p => p.PuntoEmisionSriUsuIdActNavigations)
+                .HasForeignKey(d => d.UsuIdAct)
+                .HasConstraintName("fk_punto_em_user_act");
+
+            entity.HasOne(d => d.UsuIdRegNavigation).WithMany(p => p.PuntoEmisionSriUsuIdRegNavigations)
+                .HasForeignKey(d => d.UsuIdReg)
+                .HasConstraintName("fk_punto_em_user_reg");
         });
 
         modelBuilder.Entity<PuntoVentum>(entity =>
         {
-            entity
-                .HasNoKey()
-                .ToTable("PUNTO_VENTA");
+            entity.HasKey(e => e.PuntovtaId);
 
-            entity.Property(e => e.Estado).HasColumnName("estado");
+            entity.ToTable("PUNTO_VENTA");
+
+            entity.Property(e => e.PuntovtaId)
+                .ValueGeneratedNever()
+                .HasColumnName("puntovta_id");
+            entity.Property(e => e.EstadoId).HasColumnName("estado_id");
             entity.Property(e => e.FechaHoraAct)
                 .HasColumnType("datetime")
                 .HasColumnName("fecha_hora_act");
@@ -672,7 +936,6 @@ public partial class BaseErpContext : DbContext
                 .HasColumnType("datetime")
                 .HasColumnName("fecha_hora_reg");
             entity.Property(e => e.PuntoEmisionId).HasColumnName("punto_emision_id");
-            entity.Property(e => e.PuntovtaId).HasColumnName("puntovta_id");
             entity.Property(e => e.PuntovtaNombre)
                 .HasMaxLength(30)
                 .IsUnicode(false)
@@ -681,15 +944,27 @@ public partial class BaseErpContext : DbContext
             entity.Property(e => e.UsuIdAct).HasColumnName("usu_id_act");
             entity.Property(e => e.UsuIdReg).HasColumnName("usu_id_reg");
 
-            entity.HasOne(d => d.Puntovta).WithMany()
-                .HasForeignKey(d => d.PuntovtaId)
+            entity.HasOne(d => d.Estado).WithMany(p => p.PuntoVenta)
+                .HasForeignKey(d => d.EstadoId)
+                .HasConstraintName("fk_puntovta_estado");
+
+            entity.HasOne(d => d.Puntovta).WithOne(p => p.PuntoVentum)
+                .HasForeignKey<PuntoVentum>(d => d.PuntovtaId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_PUNTO_VENTA_PUNTO_EMISION_SRI");
 
-            entity.HasOne(d => d.Sucursal).WithMany()
+            entity.HasOne(d => d.Sucursal).WithMany(p => p.PuntoVenta)
                 .HasForeignKey(d => d.SucursalId)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_puntovta_sucursal");
+
+            entity.HasOne(d => d.UsuIdActNavigation).WithMany(p => p.PuntoVentumUsuIdActNavigations)
+                .HasForeignKey(d => d.UsuIdAct)
+                .HasConstraintName("fk_puntovta_user_act");
+
+            entity.HasOne(d => d.UsuIdRegNavigation).WithMany(p => p.PuntoVentumUsuIdRegNavigations)
+                .HasForeignKey(d => d.UsuIdReg)
+                .HasConstraintName("fk_puntovta_user_reg");
         });
 
         modelBuilder.Entity<Rol>(entity =>
@@ -701,7 +976,7 @@ public partial class BaseErpContext : DbContext
             entity.Property(e => e.RolId)
                 .ValueGeneratedNever()
                 .HasColumnName("rol_id");
-            entity.Property(e => e.Estado).HasColumnName("estado");
+            entity.Property(e => e.EstadoId).HasColumnName("estado_id");
             entity.Property(e => e.FechaHoraAct)
                 .HasColumnType("datetime")
                 .HasColumnName("fecha_hora_act");
@@ -712,11 +987,20 @@ public partial class BaseErpContext : DbContext
                 .HasMaxLength(100)
                 .IsUnicode(false)
                 .HasColumnName("rol_descripcion");
-            entity.Property(e => e.UsuIdAct)
-                .HasMaxLength(255)
-                .IsUnicode(false)
-                .HasColumnName("usu_id_act");
+            entity.Property(e => e.UsuIdAct).HasColumnName("usu_id_act");
             entity.Property(e => e.UsuIdReg).HasColumnName("usu_id_reg");
+
+            entity.HasOne(d => d.Estado).WithMany(p => p.Rols)
+                .HasForeignKey(d => d.EstadoId)
+                .HasConstraintName("fk_rol_estado");
+
+            entity.HasOne(d => d.UsuIdActNavigation).WithMany(p => p.RolUsuIdActNavigations)
+                .HasForeignKey(d => d.UsuIdAct)
+                .HasConstraintName("fk_rol_user_act");
+
+            entity.HasOne(d => d.UsuIdRegNavigation).WithMany(p => p.RolUsuIdRegNavigations)
+                .HasForeignKey(d => d.UsuIdReg)
+                .HasConstraintName("fk_rol_user_reg");
         });
 
         modelBuilder.Entity<Stock>(entity =>
@@ -731,7 +1015,7 @@ public partial class BaseErpContext : DbContext
             entity.Property(e => e.BodegaId).HasColumnName("bodega_id");
             entity.Property(e => e.CantidadStock).HasColumnName("cantidad_stock");
             entity.Property(e => e.EmpresaId).HasColumnName("empresa_id");
-            entity.Property(e => e.Estado).HasColumnName("estado");
+            entity.Property(e => e.EstadoId).HasColumnName("estado_id");
             entity.Property(e => e.FechaHoraAct)
                 .HasColumnType("datetime")
                 .HasColumnName("fecha_hora_act");
@@ -743,10 +1027,34 @@ public partial class BaseErpContext : DbContext
             entity.Property(e => e.UsuIdAct).HasColumnName("usu_id_act");
             entity.Property(e => e.UsuIdReg).HasColumnName("usu_id_reg");
 
+            entity.HasOne(d => d.Bodega).WithMany(p => p.Stocks)
+                .HasForeignKey(d => d.BodegaId)
+                .HasConstraintName("fk_stock_bodega");
+
             entity.HasOne(d => d.Empresa).WithMany(p => p.Stocks)
                 .HasForeignKey(d => d.EmpresaId)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_stock_empresa");
+
+            entity.HasOne(d => d.Estado).WithMany(p => p.Stocks)
+                .HasForeignKey(d => d.EstadoId)
+                .HasConstraintName("fk_stock_estado");
+
+            entity.HasOne(d => d.Prod).WithMany(p => p.Stocks)
+                .HasForeignKey(d => d.ProdId)
+                .HasConstraintName("fk_stock_producto");
+
+            entity.HasOne(d => d.Sucursal).WithMany(p => p.Stocks)
+                .HasForeignKey(d => d.SucursalId)
+                .HasConstraintName("fk_stock_sucursal");
+
+            entity.HasOne(d => d.UsuIdActNavigation).WithMany(p => p.StockUsuIdActNavigations)
+                .HasForeignKey(d => d.UsuIdAct)
+                .HasConstraintName("fk_stock_user_act");
+
+            entity.HasOne(d => d.UsuIdRegNavigation).WithMany(p => p.StockUsuIdRegNavigations)
+                .HasForeignKey(d => d.UsuIdReg)
+                .HasConstraintName("fk_stock_user_reg");
         });
 
         modelBuilder.Entity<Sucursal>(entity =>
@@ -764,7 +1072,7 @@ public partial class BaseErpContext : DbContext
                 .IsFixedLength()
                 .HasColumnName("cod_establecimiento_sri");
             entity.Property(e => e.EmpresaId).HasColumnName("empresa_id");
-            entity.Property(e => e.Estado).HasColumnName("estado");
+            entity.Property(e => e.EstadoId).HasColumnName("estado_id");
             entity.Property(e => e.FechaHoraAct)
                 .HasColumnType("datetime")
                 .HasColumnName("fecha_hora_act");
@@ -789,6 +1097,22 @@ public partial class BaseErpContext : DbContext
                 .HasColumnName("sucursal_telefono");
             entity.Property(e => e.UsuIdAct).HasColumnName("usu_id_act");
             entity.Property(e => e.UsuIdReg).HasColumnName("usu_id_reg");
+
+            entity.HasOne(d => d.Empresa).WithMany(p => p.Sucursals)
+                .HasForeignKey(d => d.EmpresaId)
+                .HasConstraintName("fk_sucursal_empresa");
+
+            entity.HasOne(d => d.Estado).WithMany(p => p.Sucursals)
+                .HasForeignKey(d => d.EstadoId)
+                .HasConstraintName("fk_sucursal_estado");
+
+            entity.HasOne(d => d.UsuIdActNavigation).WithMany(p => p.SucursalUsuIdActNavigations)
+                .HasForeignKey(d => d.UsuIdAct)
+                .HasConstraintName("fk_sucursal_user_act");
+
+            entity.HasOne(d => d.UsuIdRegNavigation).WithMany(p => p.SucursalUsuIdRegNavigations)
+                .HasForeignKey(d => d.UsuIdReg)
+                .HasConstraintName("fk_sucursal_user_reg");
         });
 
         modelBuilder.Entity<TarjetaCredito>(entity =>
@@ -800,6 +1124,7 @@ public partial class BaseErpContext : DbContext
             entity.Property(e => e.TarjetacredId)
                 .ValueGeneratedNever()
                 .HasColumnName("tarjetacred_id");
+            entity.Property(e => e.EstadoId).HasColumnName("estado_id");
             entity.Property(e => e.FechaHoraAct)
                 .HasColumnType("datetime")
                 .HasColumnName("fecha_hora_act");
@@ -814,10 +1139,22 @@ public partial class BaseErpContext : DbContext
             entity.Property(e => e.UsuIdAct).HasColumnName("usu_id_act");
             entity.Property(e => e.UsuIdReg).HasColumnName("usu_id_reg");
 
+            entity.HasOne(d => d.Estado).WithMany(p => p.TarjetaCreditos)
+                .HasForeignKey(d => d.EstadoId)
+                .HasConstraintName("fk_tarjeta_estado");
+
             entity.HasOne(d => d.Industria).WithMany(p => p.TarjetaCreditos)
                 .HasForeignKey(d => d.IndustriaId)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_tarjeta_indus");
+
+            entity.HasOne(d => d.UsuIdActNavigation).WithMany(p => p.TarjetaCreditoUsuIdActNavigations)
+                .HasForeignKey(d => d.UsuIdAct)
+                .HasConstraintName("fk_tarjeta_user_act");
+
+            entity.HasOne(d => d.UsuIdRegNavigation).WithMany(p => p.TarjetaCreditoUsuIdRegNavigations)
+                .HasForeignKey(d => d.UsuIdReg)
+                .HasConstraintName("fk_tarjeta_user_reg");
         });
 
         modelBuilder.Entity<TipoMovimiento>(entity =>
@@ -829,7 +1166,7 @@ public partial class BaseErpContext : DbContext
             entity.Property(e => e.TipomovId)
                 .ValueGeneratedNever()
                 .HasColumnName("tipomov_id");
-            entity.Property(e => e.Estado).HasColumnName("estado");
+            entity.Property(e => e.EstadoId).HasColumnName("estado_id");
             entity.Property(e => e.FechaHoraAct)
                 .HasColumnType("datetime")
                 .HasColumnName("fecha_hora_act");
@@ -843,6 +1180,18 @@ public partial class BaseErpContext : DbContext
             entity.Property(e => e.TipomovIngEgr).HasColumnName("tipomov_ing_egr");
             entity.Property(e => e.UsuIdAct).HasColumnName("usu_id_act");
             entity.Property(e => e.UsuIdReg).HasColumnName("usu_id_reg");
+
+            entity.HasOne(d => d.Estado).WithMany(p => p.TipoMovimientos)
+                .HasForeignKey(d => d.EstadoId)
+                .HasConstraintName("fk_tipo_mov_estado");
+
+            entity.HasOne(d => d.UsuIdActNavigation).WithMany(p => p.TipoMovimientoUsuIdActNavigations)
+                .HasForeignKey(d => d.UsuIdAct)
+                .HasConstraintName("fk_tipo_mov_user_act");
+
+            entity.HasOne(d => d.UsuIdRegNavigation).WithMany(p => p.TipoMovimientoUsuIdRegNavigations)
+                .HasForeignKey(d => d.UsuIdReg)
+                .HasConstraintName("fk_tipo_mov_user_reg");
         });
 
         modelBuilder.Entity<Usuario>(entity =>
@@ -855,14 +1204,12 @@ public partial class BaseErpContext : DbContext
                 .ValueGeneratedNever()
                 .HasColumnName("usu_id");
             entity.Property(e => e.EmpresaId).HasColumnName("empresa_id");
-            entity.Property(e => e.Estado).HasColumnName("estado");
+            entity.Property(e => e.EstadoId).HasColumnName("estado_id");
             entity.Property(e => e.FechaHoraAct)
-                .HasMaxLength(255)
-                .IsUnicode(false)
+                .HasColumnType("datetime")
                 .HasColumnName("fecha_hora_act");
             entity.Property(e => e.FechaHoraReg)
-                .HasMaxLength(255)
-                .IsUnicode(false)
+                .HasColumnType("datetime")
                 .HasColumnName("fecha_hora_reg");
             entity.Property(e => e.UsuIdAct).HasColumnName("usu_id_act");
             entity.Property(e => e.UsuIdReg).HasColumnName("usu_id_reg");
@@ -870,6 +1217,22 @@ public partial class BaseErpContext : DbContext
                 .HasMaxLength(255)
                 .IsUnicode(false)
                 .HasColumnName("usu_nombre");
+
+            entity.HasOne(d => d.Empresa).WithMany(p => p.Usuarios)
+                .HasForeignKey(d => d.EmpresaId)
+                .HasConstraintName("fk_usuario_empresa");
+
+            entity.HasOne(d => d.Estado).WithMany(p => p.Usuarios)
+                .HasForeignKey(d => d.EstadoId)
+                .HasConstraintName("fk_usuario_estado");
+
+            entity.HasOne(d => d.UsuIdActNavigation).WithMany(p => p.InverseUsuIdActNavigation)
+                .HasForeignKey(d => d.UsuIdAct)
+                .HasConstraintName("fk_usuario_user_act");
+
+            entity.HasOne(d => d.UsuIdRegNavigation).WithMany(p => p.InverseUsuIdRegNavigation)
+                .HasForeignKey(d => d.UsuIdReg)
+                .HasConstraintName("fk_usuario_user_reg");
         });
 
         modelBuilder.Entity<UsuarioPermiso>(entity =>
@@ -881,7 +1244,7 @@ public partial class BaseErpContext : DbContext
             entity.Property(e => e.PermisoId)
                 .ValueGeneratedNever()
                 .HasColumnName("permiso_id");
-            entity.Property(e => e.EstadoPermiso).HasColumnName("estado_permiso");
+            entity.Property(e => e.EstadoId).HasColumnName("estado_id");
             entity.Property(e => e.FechaHoraAct)
                 .HasColumnType("datetime")
                 .HasColumnName("fecha_hora_act");
@@ -894,15 +1257,31 @@ public partial class BaseErpContext : DbContext
             entity.Property(e => e.UsuIdAct).HasColumnName("usu_id_act");
             entity.Property(e => e.UsuIdReg).HasColumnName("usu_id_reg");
 
+            entity.HasOne(d => d.Estado).WithMany(p => p.UsuarioPermisos)
+                .HasForeignKey(d => d.EstadoId)
+                .HasConstraintName("fk_usu_permiso_estado");
+
+            entity.HasOne(d => d.Modulo).WithMany(p => p.UsuarioPermisos)
+                .HasForeignKey(d => d.ModuloId)
+                .HasConstraintName("fk_usu_permiso_modulo");
+
             entity.HasOne(d => d.Opcion).WithMany(p => p.UsuarioPermisos)
                 .HasForeignKey(d => d.OpcionId)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_usu_opcion_opcion");
 
-            entity.HasOne(d => d.Usu).WithMany(p => p.UsuarioPermisos)
+            entity.HasOne(d => d.Usu).WithMany(p => p.UsuarioPermisoUsus)
                 .HasForeignKey(d => d.UsuId)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_usu_opcion_usuario");
+
+            entity.HasOne(d => d.UsuIdActNavigation).WithMany(p => p.UsuarioPermisoUsuIdActNavigations)
+                .HasForeignKey(d => d.UsuIdAct)
+                .HasConstraintName("fk_usu_permiso_user_act");
+
+            entity.HasOne(d => d.UsuIdRegNavigation).WithMany(p => p.UsuarioPermisoUsuIdRegNavigations)
+                .HasForeignKey(d => d.UsuIdReg)
+                .HasConstraintName("fk_usu_permiso_user_reg");
         });
 
         modelBuilder.Entity<UsuarioRol>(entity =>
@@ -914,7 +1293,7 @@ public partial class BaseErpContext : DbContext
             entity.Property(e => e.UsuRolId)
                 .ValueGeneratedNever()
                 .HasColumnName("usu_rol_id");
-            entity.Property(e => e.Estado).HasColumnName("estado");
+            entity.Property(e => e.EstadoId).HasColumnName("estado_id");
             entity.Property(e => e.FechaHoraAct)
                 .HasColumnType("datetime")
                 .HasColumnName("fecha_hora_act");
@@ -926,15 +1305,27 @@ public partial class BaseErpContext : DbContext
             entity.Property(e => e.UsuIdAct).HasColumnName("usu_id_act");
             entity.Property(e => e.UsuIdReg).HasColumnName("usu_id_reg");
 
+            entity.HasOne(d => d.Estado).WithMany(p => p.UsuarioRols)
+                .HasForeignKey(d => d.EstadoId)
+                .HasConstraintName("fk_usu_rol_estado");
+
             entity.HasOne(d => d.Rol).WithMany(p => p.UsuarioRols)
                 .HasForeignKey(d => d.RolId)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_usuario_rol_rol");
 
-            entity.HasOne(d => d.Usu).WithMany(p => p.UsuarioRols)
+            entity.HasOne(d => d.Usu).WithMany(p => p.UsuarioRolUsus)
                 .HasForeignKey(d => d.UsuId)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_usuario_rol_usuario");
+
+            entity.HasOne(d => d.UsuIdActNavigation).WithMany(p => p.UsuarioRolUsuIdActNavigations)
+                .HasForeignKey(d => d.UsuIdAct)
+                .HasConstraintName("fk_usu_rol_user_act");
+
+            entity.HasOne(d => d.UsuIdRegNavigation).WithMany(p => p.UsuarioRolUsuIdRegNavigations)
+                .HasForeignKey(d => d.UsuIdReg)
+                .HasConstraintName("fk_usu_rol_user_reg");
         });
 
         OnModelCreatingPartial(modelBuilder);

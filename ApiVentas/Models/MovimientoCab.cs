@@ -29,7 +29,7 @@ public partial class MovimientoCab
 
     public int? ProveedorId { get; set; }
 
-    public string? Estado { get; set; }
+    public int? EstadoId { get; set; }
 
     public DateTime? FechaHoraReg { get; set; }
 
@@ -39,9 +39,13 @@ public partial class MovimientoCab
 
     public int? UsuIdAct { get; set; }
 
+    public virtual Bodega? Bodega { get; set; }
+
     public virtual Cliente? Cliente { get; set; }
 
     public virtual Empresa? Empresa { get; set; }
+
+    public virtual Estado? Estado { get; set; }
 
     public virtual ICollection<MovimientoDetPago> MovimientoDetPagos { get; set; } = new List<MovimientoDetPago>();
 
@@ -49,9 +53,13 @@ public partial class MovimientoCab
 
     public virtual Proveedor? Proveedor { get; set; }
 
+    public virtual PuntoVentum? Puntovta { get; set; }
+
     public virtual Sucursal? Sucursal { get; set; }
 
     public virtual TipoMovimiento? Tipomov { get; set; }
+
+    public virtual Usuario? UsuIdActNavigation { get; set; }
 
     public virtual Usuario? UsuIdRegNavigation { get; set; }
 }

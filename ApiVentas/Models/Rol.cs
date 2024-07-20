@@ -9,7 +9,7 @@ public partial class Rol
 
     public string? RolDescripcion { get; set; }
 
-    public short? Estado { get; set; }
+    public int? EstadoId { get; set; }
 
     public DateTime? FechaHoraReg { get; set; }
 
@@ -17,7 +17,13 @@ public partial class Rol
 
     public int? UsuIdReg { get; set; }
 
-    public string? UsuIdAct { get; set; }
+    public int? UsuIdAct { get; set; }
+
+    public virtual Estado? Estado { get; set; }
+
+    public virtual Usuario? UsuIdActNavigation { get; set; }
+
+    public virtual Usuario? UsuIdRegNavigation { get; set; }
 
     public virtual ICollection<UsuarioRol> UsuarioRols { get; set; } = new List<UsuarioRol>();
 }

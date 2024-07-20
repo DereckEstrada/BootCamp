@@ -23,15 +23,23 @@ public partial class Cliente
 
     public string? ClienteDireccion { get; set; }
 
-    public short? Estado { get; set; }
+    public int? EstadoId { get; set; }
 
     public DateTime? FechaHoraReg { get; set; }
 
-    public DateOnly? FechaHoraAct { get; set; }
+    public DateTime? FechaHoraAct { get; set; }
 
     public int? UsuIdReg { get; set; }
 
     public int? UsuIdAct { get; set; }
 
+    public virtual Estado? Estado { get; set; }
+
     public virtual ICollection<MovimientoCab> MovimientoCabs { get; set; } = new List<MovimientoCab>();
+
+    public virtual ICollection<MovimientoDetPago> MovimientoDetPagos { get; set; } = new List<MovimientoDetPago>();
+
+    public virtual Usuario? UsuIdActNavigation { get; set; }
+
+    public virtual Usuario? UsuIdRegNavigation { get; set; }
 }

@@ -13,7 +13,7 @@ public partial class Bodega
 
     public string? BodegaTelefono { get; set; }
 
-    public short? Estado { get; set; }
+    public int? EstadoId { get; set; }
 
     public DateTime? FechaHoraReg { get; set; }
 
@@ -25,5 +25,15 @@ public partial class Bodega
 
     public int? SucursalId { get; set; }
 
+    public virtual Estado? Estado { get; set; }
+
+    public virtual ICollection<MovimientoCab> MovimientoCabs { get; set; } = new List<MovimientoCab>();
+
+    public virtual ICollection<Stock> Stocks { get; set; } = new List<Stock>();
+
     public virtual Sucursal? Sucursal { get; set; }
+
+    public virtual Usuario? UsuIdActNavigation { get; set; }
+
+    public virtual Usuario? UsuIdRegNavigation { get; set; }
 }
