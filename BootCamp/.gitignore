@@ -1,0 +1,43 @@
+﻿################################################################################
+<<<<<<< HEAD
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/ApiVentas/bin/Debug/net8.0
+/.vs/ApiVentas/FileContentIndex
+/.vs/ApiVentas/config
+/.vs/ApiVentas/v17/.suo
+/.vs/ApiVentas/v17/DocumentLayout.json
+*.wsuo
+*.json
+/ApiVentas/obj/Debug/net8.0/ref/ApiVentas.dll
+/ApiVentas/obj/Debug/net8.0/refint/ApiVentas.dll
+/ApiVentas/obj/Debug/net8.0/ApiVentas.AssemblyInfo.cs
+/ApiVentas/obj/Debug/net8.0/ApiVentas.AssemblyInfoInputs.cache
+/ApiVentas/obj/Debug/net8.0/ApiVentas.csproj.CoreCompileInputs.cache
+/ApiVentas/obj/Debug/net8.0/ApiVentas.dll
+/ApiVentas/obj/Debug/net8.0/ApiVentas.pdb
+/ApiVentas/obj/Debug/net8.0/apphost.exe
+/.vs/ProjectEvaluation/apiventas.strings.v8.bin
+/.vs/ProjectEvaluation/apiventas.projects.v8.bin
+/.vs/ProjectEvaluation/apiventas.metadata.v8.bin
+/.vs/ApiVentas/v17/.futdcache.v2
+/.vs/ApiVentas/DesignTimeBuild/.dtbcache.v2
+/ApiVentas/obj/Debug/net8.0/ApiVentas.GeneratedMSBuildEditorConfig.editorconfig
+/ApiVentas/obj/Debug/net8.0/ApiVentas.csproj.AssemblyReference.cache
+/ApiVentas/obj/Debug/net8.0/ApiVentas.assets.cache
+/ApiVentas/obj/Debug/net8.0/ApiVentas.csproj.FileListAbsolute.txt
+/ApiVentas/obj/Debug/net8.0/ApiVentas.genruntimeconfig.cache
+/ApiVentas/obj/ApiVentas.csproj.nuget.dgspec.json
+/ApiVentas/obj/ApiVentas.csproj.nuget.g.props
+/ApiVentas/obj/project.assets.json
+/ApiVentas/obj/project.nuget.cache
+=======
+# Este archivo .gitignore ha sido creado automáticamente por Microsoft(R) Visual Studio.
+################################################################################
+
+/ApiVentas/bin/Debug/net8.0
+/ApiVentas/obj/Debug/net8.0
+/.vs/ApiVentas
+*.user
+>>>>>>> 51d753598d72b527e8641099d8c0352deff52358

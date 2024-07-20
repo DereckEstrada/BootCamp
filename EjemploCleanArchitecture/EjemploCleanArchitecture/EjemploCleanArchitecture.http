@@ -1,0 +1,6 @@
+@EjemploCleanArchitecture_HostAddress = http://localhost:5293
+
+GET {{EjemploCleanArchitecture_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
